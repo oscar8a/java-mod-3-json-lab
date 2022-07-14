@@ -18,9 +18,17 @@ class ScannerUserInputService implements UserInputService {
         return input;
     }
 
+    public int getUserInputInt(String prompt) {
+        userOutputService.printMessage(prompt);
+        String input = scanner.nextLine();
+        if (input.isBlank()) {
+            return getUserInputInt(prompt);
+        }
+        return Integer.parseInt(input);
+    }
+
     @Override
     public void close() throws Exception {
         scanner.close();
-
     }
 }

@@ -34,10 +34,13 @@ public class FileReader {
             String[] peopleStrings = thisLine.split(",");
 
             //Make a person object
-            String age = peopleStrings[0];
-            String name = peopleStrings[1];
+            String firstName = peopleStrings[0];
+            String lastName = peopleStrings[1];
+            int birthDay = Integer.parseInt(peopleStrings[2]);
+            int birthMonth = Integer.parseInt(peopleStrings[3]);
+            int birthYear = Integer.parseInt(peopleStrings[4]);
 
-            Person p = new Person(age, name);
+            Person p = new Person(firstName, lastName, birthDay, birthMonth, birthYear);
 
             //Add the person instance to the list
             people.add(p);
@@ -50,10 +53,10 @@ public class FileReader {
     public static void writeCsv(String fileName, List<Person> personList) {
         try (FileWriter fileWriter = new FileWriter(fileName)){
             // add header to csv file
-            fileWriter.write("Age, Name\n");
+            fileWriter.write("Age, Name, BirthDay, BirthMonth, BirthYear\n");
             for (Person person : personList) {
                 // write all person instances into the File
-                fileWriter.write(person.toString() + "\n");
+                fileWriter.write(person.formatAsCSV() + "\n");
             }
         } catch (IOException e) {
             e.printStackTrace();

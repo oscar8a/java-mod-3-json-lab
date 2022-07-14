@@ -6,8 +6,11 @@ public class AddPersonToList {
     }
 
     public Person createPerson() {
-        String age = userInputService.getUserInput("What's the person's age?");
-        String name = userInputService.getUserInput("What's the person's name?");
-        return new Person(age, name);
+        String firstName = userInputService.getUserInput("What's the person's first name?");
+        String lastName = userInputService.getUserInput("What's the person's last name?");
+        int birthDay = userInputService.getUserInputInt("What's the person's birth Day only, no Month, no Year?");
+        int birthMonth = userInputService.getUserInputInt("What's the person's birth Month?");
+        int birthYear = userInputService.getUserInputInt("What's the person's birth Year?");
+        return new Person(firstName, lastName, birthDay, birthMonth, birthYear);
     }
 }
