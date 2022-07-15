@@ -1,3 +1,6 @@
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -52,15 +55,32 @@ public class FileReader {
 
     public static void writeCsv(String fileName, List<Person> personList) {
         try (FileWriter fileWriter = new FileWriter(fileName)){
+            StringBuffer allPersonsAsCSV = new StringBuffer();
             // add header to csv file
             fileWriter.write("Age, Name, BirthDay, BirthMonth, BirthYear\n");
             for (Person person : personList) {
                 // write all person instances into the File
                 fileWriter.write(person.formatAsCSV() + "\n");
+
+                // JSON Stuff
+                allPersonsAsCSV.append(person.formatAsCSV());
+                writeToFile("PERSON_LIST_FILENAME", allPersonsAsCSV.toString());
             }
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
+        }
+    }
+    public static void writeToFile(String fileName, String text) throws IOException {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(fileName);
+            fileWriter.write(text);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        } finally {
+            if (fileWriter != null)
+                fileWriter.close();
         }
     }
 }

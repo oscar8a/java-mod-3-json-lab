@@ -1,9 +1,23 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class FileIORunner {
+    private static String fileName = "";
     public static void main(String[] args) throws IOException {
+        // Implement the use of arguments to write to files
+        System.out.println(args.length);
+        if (args.length >= 1) {
+            readAndWriting(args);
+        } else {
+            System.out.println("invalid arguments");
+            return;
+        }
 
         UserOutputService userOutputService = new SysoutUserOutputService();
 
@@ -20,7 +34,9 @@ public class FileIORunner {
 
             if (shouldRestore.toUpperCase().equals("Y")) {
                 // This is a List of Person Objects, parsed from the CSV File if User wishes to restore
-                personList = FileReader.parseCsv("simple.data");
+                userOutputService.printMessage(fileName);
+                personList = FileReader.parseCsv(fileName);
+//                FileReader.writeJson(personList);
             }
 
             while(keepRunningProgram) {
@@ -36,10 +52,14 @@ public class FileIORunner {
                     Person p = addPersonToList.createPerson();
                     personList.add(p);
                     // Write the instantiation of person list to csv file
-                    FileReader.writeCsv("simple.data", personList);
+                    FileReader.writeCsv(fileName, personList);
                 } else if (option.equals("2")) {
                     // Print a list of current persons
-                    printPersonList(personList);
+                    // printPersonList(personList);
+
+                    // Printing List as JSON
+                    printPersonListAsJSON(personList);
+
                 } else if (option.equals("3")) {
                     // Exit the program
                     userOutputService.printMessage("Exiting program...");
@@ -52,9 +72,36 @@ public class FileIORunner {
         }
     }
 
+    public static void readAndWriting(String[] args) {
+        // Get file name from first argument
+        if (args.length > 0) {
+            fileName = args[0];
+        }
+        System.out.println(fileName);
+        // If file does not exist, exit program
+        if (!new File(fileName).exists()) {
+            System.out.println("Can't open file.");
+            System.exit(1);
+        }
+
+        System.out.println("The user has chosen this file: " + fileName);
+    }
+
     public static void printPersonList(List<Person> personList) {
         for (Person person : personList) {
             System.out.println(person.toString());
         }
+    }
+
+    static void printPersonListAsJSON(List<Person> personList) throws JsonProcessingException {
+        String json = new ObjectMapper().writeValueAsString(personList);
+        // System.out.println(json);
+
+        // formatted JSON
+        String newJson = "";
+        for (String s : json.split("},")) {
+            newJson += s + "}\n";
+        }
+        System.out.println("Formatted JSON:\n" + newJson);
     }
 }
